@@ -6,3 +6,28 @@ compiler:
 
 dependencies:
     - OpenZeppelin/openzeppelin-contracts@4.3.3
+
+reports:
+# that's does not work, so I have specified each contract manually below
+    exclude_paths:
+        - "@openzeppelin/**/*.*"
+        - "@openzeppelin-upgradeable/**/*.*"
+        - "OpenZeppelin/openzeppelin-contracts@*/**/*.*"
+        - "OpenZeppelin/openzeppelin-contracts-upgradeable@*/**/*.*"
+    exclude_contracts:
+        - "ERC721"
+        - "ERC20PresetMinterPauser"
+        - "ERC20Pausable"
+        - "ERC20"
+        - "AccessControl"
+        - "Address"
+        - "ERC721Enumerable"
+        - "ERC721URIStorage"
+        - "SafeERC20"
+        - "Initializable"
+        - "ReentrancyGuard"
+        - "IERC20"
+        - "IERC721"
+        - "Math"
+        - "Ownable"
+    only_include_project: true
