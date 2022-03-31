@@ -22,11 +22,33 @@ def user1(users):
     return users[1]
     
 @pytest.fixture
-def user2(users):
+def botCoreAddr(users):
     return users[2]    
 
 
+@pytest.fixture()
+def qwer():
+    return qwer
+
+
+@pytest.fixture()
+def wrap():
+    return wrap
+
+
 @pytest.fixture
-def wrapper(admin):
-    contract = NFTWrapper.deploy(0xd4Bb17B32493FFFe424f9Cc9aA1b7E2aB589AA3b, qwer, wrap, {"from": admin})
+def wrapper(admin, users):
+    contract = NFTWrapper.deploy(users[2], qwer, wrap, {"from": admin})
+    return contract
+
+
+@pytest.fixture
+def botcore(admin, users):
+    contract = BotCore.deploy({"from": admin})
+    return contract
+
+
+@pytest.fixture
+def nft(admin):
+    contract = MockNFT.deploy({'from': admin})
     return contract
