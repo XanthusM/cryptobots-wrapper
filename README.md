@@ -28,4 +28,4 @@ brownie console --network mainnet-fork
 
 ### Run
 
-brownie test -vv -R
+rm -rf build && brownie test -vv -R --coverage

@@ -37,7 +37,7 @@ interface IBotCore is IERC721, IGetBot {}
 contract BotCoreWrapper is IGetBot, ReentrancyGuard, Ownable, ERC721 {
     using Strings for uint256;
 
-    IBotCore immutable public botCore;
+    IBotCore public botCore;
     string public baseURI;
     string public contractURI;
 
