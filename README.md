@@ -19,3 +19,13 @@ https://opensea.io/collection/wrapped-cryptopunks
 https://etherscan.io/address/0xb7f7f6c52f2e2fdb1963eab30438024864c313f6
 Wrapped Cryptokities
 https://etherscan.io/address/0xa10740ff9ff6852eac84cdcff9184e1d6d27c057#writeContracts-wrapper
+
+## Test
+
+### Fork
+
+brownie console --network mainnet-fork
+
+### Run
+
+brownie test -vv -R

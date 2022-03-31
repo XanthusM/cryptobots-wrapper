@@ -8,6 +8,11 @@ import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 
 interface IGetBot {
+    function transfer(
+        address _to,
+        uint256 _tokenId
+    ) external;
+
     function getBot(uint256 _id)
         external
         view
@@ -29,38 +34,45 @@ interface IGetBot {
 interface IBotCore is IERC721, IGetBot {}
 
 
-contract NFTWrapper is IGetBot, ReentrancyGuard, Ownable, ERC721 {
+contract BotCoreWrapper is IGetBot, ReentrancyGuard, Ownable, ERC721 {
     using Strings for uint256;
 
     IBotCore immutable public botCore;
-    string internal _baseURIValue;
-    string internal _contractURIValue;
+    string public baseURI;
+    string public contractURI;
 
     event BaseURISet(string value);
     event ContractURISet(string value);
 
-    constructor (address botCoreAddress, string memory baseURI, string memory contractURI) ERC721("WrappedCryptoBots", "WrappedCryptoBots") {
+    constructor (address botCoreAddress, string memory baseURIValue, string memory contractURIValue) ERC721("WrappedCryptoBots", "WrappedCryptoBots") {
         require(botCoreAddress != address(0), "zero address");
         botCore = IBotCore(botCoreAddress);
-        _baseURIValue = baseURI;
-        emit BaseURISet(_baseURIValue);
-        _contractURIValue = contractURI;
-        emit ContractURISet(_baseURIValue);
+        baseURI = baseURIValue;
+        emit BaseURISet(baseURIValue);
+        contractURI = contractURIValue;
+        emit ContractURISet(contractURIValue);
     }
 
-    function setBaseURI(string calldata baseURI) external onlyOwner {
-        _baseURIValue = baseURI;
-        emit BaseURISet(_baseURIValue);
+    function transfer(
+        address _to,
+        uint256 _tokenId
+    ) external override {
+        transferFrom(msg.sender, _to, _tokenId);
     }
 
-    function setContractURI(string calldata contractURI) external onlyOwner {
-        _contractURIValue = contractURI;
-        emit ContractURISet(_baseURIValue);
+    function setBaseURI(string calldata baseURIValue) external onlyOwner {
+        baseURI = baseURIValue;
+        emit BaseURISet(baseURIValue);
+    }
+
+    function setContractURI(string calldata contractURIValue) external onlyOwner {
+        contractURI = contractURIValue;
+        emit ContractURISet(contractURIValue);
     }
 
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
         require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
-        return string(abi.encodePacked(_baseURIValue, tokenId.toString()));
+        return string(abi.encodePacked(baseURI, tokenId.toString()));
     }
 
     function wrap(uint256 tokenId) external nonReentrant {
@@ -71,7 +83,7 @@ contract NFTWrapper is IGetBot, ReentrancyGuard, Ownable, ERC721 {
     function unwrap(uint256 tokenId) external nonReentrant {
         require(ownerOf(tokenId) == msg.sender, "NFTWrapper: unwrap from incorrect owner");
         _burn(tokenId);
-        botCore.transferFrom(address(this), msg.sender, tokenId);
+        botCore.transfer(msg.sender, tokenId);
     }
 
     function wrapMany(uint256[] calldata tokenIds) external nonReentrant {
@@ -86,7 +98,7 @@ contract NFTWrapper is IGetBot, ReentrancyGuard, Ownable, ERC721 {
             uint256 tokenId = tokenIds[i];
             require(ownerOf(tokenId) == msg.sender, "NFTWrapper: unwrap from incorrect owner");
             _burn(tokenId);
-            botCore.transferFrom(address(this), msg.sender, tokenId);
+            botCore.transfer(msg.sender, tokenId);
         }
     }
 

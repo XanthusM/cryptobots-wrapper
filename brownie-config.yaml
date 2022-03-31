@@ -1,14 +1,8 @@
 compiler:
     solc:
         version: null
-        remappings: null
+        remappings:
+            - "@openzeppelin=OpenZeppelin/openzeppelin-contracts@4.3.3"
 
-dependencies: null
-
-reports:
-# that's does not work, so I have specified each contract manually below
-    exclude_paths:
-        
-    exclude_contracts: 
-    - "MockNFT" 
-    only_include_project: true
+dependencies:
+    - OpenZeppelin/openzeppelin-contracts@4.3.3
